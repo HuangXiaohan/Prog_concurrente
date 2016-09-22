@@ -19,5 +19,4 @@ typedef struct Terrain{
 }Terrain;
 
 
-
 #endif /* MYUTILS_H_ */

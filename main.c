@@ -9,6 +9,10 @@
 #include <time.h>
 #include "myUtils.h"
 
+void initialiserTerrain(Terrain *terrain);
+int* getPosition();
+int checkfree(Terrain *terrain,int *p);
+void afficherTerrain(Terrain *terrain);
 
 void initialiserTerrain(Terrain *terrain){
 	for(int i =0; i < LARGEUR; i++)
@@ -38,40 +42,68 @@ void initialiserTerrain(Terrain *terrain){
 
 void genererPersonnes(Terrain *terrain, int nbPersonnes){
 
+	int personnesPLacees = 0;
+	int *position;
 	srand(time(0));
 
-	int personnesPLacees = 0;
-
 	while(personnesPLacees < nbPersonnes){
-		int posLargeur = rand()%124;
-		int posLongueur = (rand()%381) +128;
+		do{
+			position = getPosition();
+		}while(checkfree(terrain,position) != 1);
+		//printf("%d,%d\n",position[0],position[1]);
 
-		// TODO ajouter personnes
+		int pligne = position[0];
+		int pcolonne = position[1];
+
+		for(int i = pligne; i < pligne + 4; i++)
+			for(int j = pcolonne; j < pcolonne + 4; j++){
+				terrain->surface[i][j] = personnesPLacees+10;
+			}
 
 		personnesPLacees++;
 	}
 
 }
 
+int checkfree(Terrain *terrain, int *p){
+	int free = 1;
+	int pligne = p[0];
+	int pcolonne = p[1];
+	for(int i = pligne; i < pligne + 4; i++)
+		for(int j = pcolonne; j < pcolonne + 4; j++){
+			if(terrain->surface[i][j] != 0)
+				free = 0;
+		}
+	return free;
+}
 
-/*void afficherTerrain(Terrain *terrain){
+int* getPosition(){
+	static int position[2];
+	position[0] = rand()%124;
+	position[1] = (rand()%381) +128;
+	return position;
+}
+
+
+void afficherTerrain(Terrain *terrain){
 	for(int i = 0; i < 128; i++){
-		for(int j = 0; j < 128; j++)
-			printf("%d", terrain->surface[i][j]);
+		for(int j = 0; j < 512; j++)
+			printf("%d\t", terrain->surface[i][j]);
 
 		putchar('\n');
 
 	}
-}*/
+}
+
 
 int main(int argc, char* argv[]){
-
 	Terrain terrain;
 
 	initialiserTerrain(&terrain);
 
 	genererPersonnes(&terrain, 50);
 
+	afficherTerrain(&terrain);
 
 	return 0;
 }
