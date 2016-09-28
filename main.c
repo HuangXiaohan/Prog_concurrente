@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "myUtils.h"
+#include "monoThread.h"
 
 void initialiserTerrain(Terrain *terrain);
 int* getPosition();
@@ -88,7 +89,7 @@ int* getPosition(){
 void afficherTerrain(Terrain *terrain){
 	for(int i = 0; i < 128; i++){
 		for(int j = 0; j < 512; j++)
-			printf("%d\t", terrain->surface[i][j]);
+			printf("%d", terrain->surface[i][j]);
 
 		putchar('\n');
 
@@ -103,7 +104,9 @@ int main(int argc, char* argv[]){
 
 	genererPersonnes(&terrain, 50);
 
-	afficherTerrain(&terrain);
+	//afficherTerrain(&terrain);
+
+	monoThread();
 
 	return 0;
 }
