@@ -47,6 +47,15 @@ void initialiserTerrain(Terrain *terrain){
 	rectangle(112+DECALAGE,72+DECALAGE,127+DECALAGE,127+DECALAGE);
 	floodfill(170,130,4);
 
+	//Sortie du mur de gauche
+	for(int i = 60; i < 68; i++)
+		for(int j = 0; j < 16; j++)
+			terrain -> surface[i][j] = -1;
+
+	//Sortie du mur de droite
+	for(int i = 56; i < 72; i++)
+		for(int j = 112; j < 128; j++)
+			terrain -> surface[i][j] = -2;
 
 }
 
@@ -67,7 +76,7 @@ void genererPersonnes(Terrain *terrain, int nbPersonnes){
 
 		for(int i = pligne; i < pligne + 4; i++)
 			for(int j = pcolonne; j < pcolonne + 4; j++){
-				terrain->surface[i][j] = personnesPLacees+10;
+				terrain->surface[i][j] = personnesPLacees+5;
 			}
 		setcolor(RED);
 		rectangle(pcolonne+DECALAGE,pligne+DECALAGE,pcolonne+DECALAGE+3,pligne+DECALAGE+3);
