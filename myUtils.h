@@ -12,7 +12,6 @@
 
 #define LONGUEUR 512
 #define LARGEUR 128
-#define DECALAGE 50
 
 typedef struct Personne{
 	// Les coordonnées sont celles du point en haut à gauche (0,0) de la personne
