@@ -2,15 +2,19 @@
  * main.c
  *
  *  Created on: 28 sept. 2016
- *      Author: huang
+ *      Author: huang & lacroix
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
+#include <getopt.h>
 #include "graphics.h"
 #include "myUtils.h"
 #include "executionThreads.h"
+#include <math.h>
+
 
 
 void initialiserTerrain(Terrain *terrain){
@@ -109,7 +113,7 @@ void getPosition(int positions[]){
 
 
 int main(int argc, char* argv[]){
-
+	int ch;
 	int gd = DETECT, gm = VGAMAX;
 	initgraph(&gd,&gm,0);
 
@@ -117,16 +121,29 @@ int main(int argc, char* argv[]){
 
 	initialiserTerrain(&terrain);
 
-	int nombreDePersonnes = 10;
+	int nombreDePersonnes=10; // Nombre de personnes par défaut
+
+
+	while((ch = getopt(argc,argv,"mp:t:")) != -1){
+		switch(ch){
+		case 'm': printf("Execute option -m\n"); break;
+		case 'p':
+			nombreDePersonnes = pow(2,(optarg[0]-'0'));
+			break;
+		case 't': printf("Execute option -t%s\n",optarg); break;
+		default: printf("Options invalides\n");
+		}
+	}
+
+
 	terrain.nbPersonnes = nombreDePersonnes;
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
-
 	monoThread(&terrain);
 
 
-	sleep(5);
+	getch();
 	closegraph();
 
 	free(terrain.personnes);
