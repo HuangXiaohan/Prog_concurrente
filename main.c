@@ -8,9 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include<unistd.h>
 #include "graphics.h"
 #include "myUtils.h"
 #include "monoThread.h"
+#include <math.h>
+
 
 
 void initialiserTerrain(Terrain *terrain){
@@ -107,7 +110,7 @@ int* getPosition(){
 
 
 int main(int argc, char* argv[]){
-
+	int ch;
 	int gd = DETECT, gm = VGAMAX;
 	initgraph(&gd,&gm,0);
 
@@ -115,7 +118,20 @@ int main(int argc, char* argv[]){
 
 	initialiserTerrain(&terrain);
 
-	genererPersonnes(&terrain, 50);
+	if(argc == 1)
+		genererPersonnes(&terrain, pow(2,3));
+	else if(argc > 1){
+		while((ch = getopt(argc,argv,"mp:t:")) != -1){
+				switch(ch){
+					case 'm': printf("Execute option -m\n");break;
+					case 'p': genererPersonnes(&terrain, pow(2,(optarg[0]-'0')));break;
+					case 't': printf("Execute option -t%s\n",optarg);break;
+					default: printf("Option invalid\n");
+				}
+		}
+	}
+
+	//genererPersonnes(&terrain, 50);
 
 	//afficherTerrain(&terrain);
 
