@@ -8,23 +8,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "myUtils.h"
 
-void *execution(void *arg)
+void *execution(Terrain* terrain)
 {
     printf("Nous sommes dans le thread.\n");
 
-    /* Pour enlever le warning */
-    (void) arg;
+    for(int i=0; i < terrain->nbPersonnes; i++){
+    	printf("P%d : %d,%d\n", i, terrain->personnes[i].x, terrain->personnes[i].y);
+    }
+
     pthread_exit(NULL);
 }
 
-int monoThread()
+int monoThread(Terrain* terrain)
 {
 	pthread_t thread;
 
 	printf("Execution du programme avec un unique thread.\n");
 
-	if(pthread_create(&thread, NULL, execution, NULL) == -1) {
+	if(pthread_create(&thread, NULL, execution, terrain) == -1) {
 		perror("pthread_create");
 		return EXIT_FAILURE;
 	}

@@ -14,13 +14,23 @@
 #define LARGEUR 128
 #define DECALAGE 50
 
+typedef struct Personne{
+	// Les coordonnées sont celles du point en haut à gauche (0,0) de la personne
+	int x;
+	int y;
+	int alive; // Est ce que la personne est sortie du terrain ou pas
+}Personne;
+
+
 typedef struct Terrain{
 	int surface[LARGEUR][LONGUEUR];
 	int nbPersonnes;
+	Personne* personnes;
 }Terrain;
 
+
 void initialiserTerrain(Terrain *terrain);
-int* getPosition();
+void getPosition(int positions[]);
 int checkfree(Terrain *terrain,int *p);
 
 #endif /* MYUTILS_H_ */
