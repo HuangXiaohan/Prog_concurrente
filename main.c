@@ -118,29 +118,35 @@ int main(int argc, char* argv[]){
 	initgraph(&gd,&gm,0);
 
 	Terrain terrain;
-
 	initialiserTerrain(&terrain);
 
 	int nombreDePersonnes=10; // Nombre de personnes par défaut
+	int optionThread = 0;
 
-
+	// Lecture des arguments
 	while((ch = getopt(argc,argv,"mp:t:")) != -1){
 		switch(ch){
 		case 'm': printf("Execute option -m\n"); break;
 		case 'p':
 			nombreDePersonnes = pow(2,(optarg[0]-'0'));
 			break;
-		case 't': printf("Execute option -t%s\n",optarg); break;
+		case 't': optionThread = atoi(optarg); break;
 		default: printf("Options invalides\n");
 		}
 	}
 
-
+	// Creation des personnes sur le terrain
 	terrain.nbPersonnes = nombreDePersonnes;
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
-	monoThread(&terrain);
+	switch(optionThread){
+	case 0:
+		monoThread(&terrain);
+		break;
+	default:
+		monoThread(&terrain);
+	}
 
 
 	getch();
