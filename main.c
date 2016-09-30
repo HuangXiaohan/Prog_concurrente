@@ -10,10 +10,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <getopt.h>
-#include "graphics.h"
 #include "myUtils.h"
 #include "executionThreads.h"
 #include <math.h>
+#include "graph.h"
 
 
 
@@ -21,36 +21,36 @@ void initialiserTerrain(Terrain *terrain){
 	for(int i =0; i < LARGEUR; i++)
 			for(int j = 0; j < LONGUEUR; j++)
 				terrain->surface[i][j] = -1;
-	rectangle(50,50,LONGUEUR+DECALAGE,LARGEUR+DECALAGE);
+	//rectangle(50,50,LONGUEUR+DECALAGE,LARGEUR+DECALAGE);
 	//floodfill(LONGUEUR/2,LARGEUR/2,100,15);
 
 	// Haut du mur de gauche
 	for(int i =0; i < 60; i++)
 		for(int j = 0; j < 16; j++)
 			terrain->surface[i][j] = -2;
-	rectangle(DECALAGE,DECALAGE,15+DECALAGE,59+DECALAGE);
-	floodfill(60,100,4);
+	//rectangle(DECALAGE,DECALAGE,15+DECALAGE,59+DECALAGE);
+	//floodfill(60,100,4);
 
 	// Bas du mur de gauche
 	for(int i = 68; i < 128; i++)
 		for(int j = 0; j < 16; j++)
 			terrain->surface[i][j] = -2;
-	rectangle(DECALAGE,68+DECALAGE,15+DECALAGE,127+DECALAGE);
-	floodfill(60,120,4);
+	//rectangle(DECALAGE,68+DECALAGE,15+DECALAGE,127+DECALAGE);
+	//floodfill(60,120,4);
 
 	// Haut du mur de droite
 	for(int i = 0; i < 56; i++)
 		for(int j = 112; j < 128; j++)
 			terrain->surface[i][j] = -2;
-	rectangle(112+DECALAGE,DECALAGE,127+DECALAGE,55+DECALAGE);
-	floodfill(170,70,4);
+	//rectangle(112+DECALAGE,DECALAGE,127+DECALAGE,55+DECALAGE);
+	//floodfill(170,70,4);
 
 	// Bas du mur de droite
 	for(int i = 72; i < 128; i++)
 		for(int j = 112; j < 128; j++)
 			terrain->surface[i][j] = -2;
-	rectangle(112+DECALAGE,72+DECALAGE,127+DECALAGE,127+DECALAGE);
-	floodfill(170,130,4);
+	//rectangle(112+DECALAGE,72+DECALAGE,127+DECALAGE,127+DECALAGE);
+	//floodfill(170,130,4);
 
 	//Sortie du mur de gauche
 	for(int i = 60; i < 68; i++)
@@ -87,8 +87,8 @@ void genererPersonnes(Terrain *terrain, int nbPersonnes){
 			for(int j = pcolonne; j < pcolonne + 4; j++){
 				terrain->surface[i][j] = personnesPlacees;
 			}
-		setcolor(RED);
-		rectangle(pcolonne+DECALAGE,pligne+DECALAGE,pcolonne+DECALAGE+3,pligne+DECALAGE+3);
+		//setcolor(RED);
+		//rectangle(pcolonne+DECALAGE,pligne+DECALAGE,pcolonne+DECALAGE+3,pligne+DECALAGE+3);
 		personnesPlacees++;
 	}
 
@@ -140,6 +140,8 @@ int main(int argc, char* argv[]){
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
+	dessinTerrain(&terrain);
+
 	switch(optionThread){
 	case 0:
 		monoThread(&terrain);
@@ -147,10 +149,6 @@ int main(int argc, char* argv[]){
 	default:
 		monoThread(&terrain);
 	}
-
-
-	getch();
-	closegraph();
 
 	free(terrain.personnes);
 	return 0;
