@@ -112,6 +112,7 @@ void getPosition(int positions[]){
 }
 
 
+
 int main(int argc, char* argv[]){
 	int ch;
 	int gd = DETECT, gm = VGAMAX;
@@ -149,6 +150,7 @@ int main(int argc, char* argv[]){
 	default:
 		monoThread(&terrain);
 	}
+
 
 	free(terrain.personnes);
 	return 0;
