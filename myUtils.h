@@ -30,6 +30,6 @@ typedef struct Terrain{
 
 void initialiserTerrain(Terrain *terrain);
 void getPosition(int positions[]);
-int checkfree(Terrain *terrain,int *p);
+int initCheckfree(Terrain *terrain,int *p);
 
 #endif /* MYUTILS_H_ */

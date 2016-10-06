@@ -40,7 +40,6 @@ void dessinTerrain(Terrain *t){
 		rectangle(t->personnes[i].x + DECALAGE, t->personnes[i].y + DECALAGE, t->personnes[i].x + DECALAGE+3, t->personnes[i].y + DECALAGE+3);
 	}
 
-	getch();
 	closegraph();
 }
 

@@ -7,6 +7,7 @@
 
 #include "myUtils.h"
 #include <math.h>
+#include <stdio.h>
 
 #define NORD 1
 #define NORD_OUEST 2
@@ -36,41 +37,43 @@ void ordonner(double directions[3][2]){
 
 
 int checkFree(Terrain* terrain, Personne* p, int direction){
+	if(p->x == 0) return 1;
+
 	switch(direction){
 
 	case SUD:
 		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x+i][p->y+4] != -1)
+			if(terrain->surface[p->y+4][p->x+i] != -1)
 				return 0;
 		break;
 
 	case SUD_OUEST:
 		for(int i=0; i < 3; i++)
-			if(terrain->surface[p->x-1][p->y+1+i] != -1)
+			if(terrain->surface[p->y+1+i][p->x-1] != -1)
 				return 0;
 		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1+i][p->y+4] != -1)
+			if(terrain->surface[p->y+4][p->x-1+i] != -1)
 				return 0;
 		break;
 
 	case NORD:
 		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x+i][p->y-1] != -1)
+			if(terrain->surface[p->y-1][p->x+i] != -1)
 				return 0;
 		break;
 
 	case NORD_OUEST:
 		for(int i=0; i < 3; i++)
-			if(terrain->surface[p->x-1][p->y+i] != -1)
+			if(terrain->surface[p->y+i][p->x-1] != -1)
 				return 0;
 		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1+i][p->y-1] != -1)
+			if(terrain->surface[p->y-1][p->x-1+i] != -1)
 				return 0;
 		break;
 
 	case OUEST:
 		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1][p->y+i] != -1)
+			if(terrain->surface[p->y+i][p->x-1] != -1)
 				return 0;
 		break;
 	}
@@ -83,12 +86,22 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 	Personne* p = &(terrain->personnes[numPersonne]);
 
+	if(p->x == 0){
+		p->alive = 0;
+		for(int i=0; i < 4; i++)
+			for(int j=0; j < 4; j++)
+			terrain->surface[p->y+j][p->x+i] = -1;
+
+		printf("Personne %d est sortie\n", numPersonne);
+		return;
+	}
+
 	switch(direction){
 
 		case SUD:
 			for(int i=0; i < 4; i++){
-				terrain->surface[p->x+i][p->y] = -1;
-				terrain->surface[p->x+i][p->y+4] = numPersonne;
+				terrain->surface[p->y][p->x+i] = -1;
+				terrain->surface[p->y+4][p->x+i] = numPersonne;
 			}
 			p->y++;
 
@@ -96,13 +109,13 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 		case SUD_OUEST:
 			for(int i=0; i < 3; i++){
-				terrain->surface[p->x+3][p->y+1+i] = -1;
-				terrain->surface[p->x-1][p->y+1+i] = numPersonne;
+				terrain->surface[p->y+1+i][p->x+3] = -1;
+				terrain->surface[p->y+1+i][p->x-1] = numPersonne;
 
 			}
 			for(int i=0; i < 4; i++){
-				terrain->surface[p->x+i][p->y] = -1;
-				terrain->surface[p->x-1+i][p->y+4] = numPersonne;
+				terrain->surface[p->y][p->x+i] = -1;
+				terrain->surface[p->y+4][p->x-1+i] = numPersonne;
 			}
 			p->x--;
 			p->y++;
@@ -110,21 +123,21 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 		case NORD:
 			for(int i=0; i < 4; i++){
-				terrain->surface[p->x+i][p->y+3] = -1;
-				terrain->surface[p->x+i][p->y-1] = numPersonne;
+				terrain->surface[p->y+3][p->x+i] = -1;
+				terrain->surface[p->y-1][p->x+i] = numPersonne;
 			}
 			p->y--;
 			break;
 
 		case NORD_OUEST:
 			for(int i=0; i < 3; i++){
-				terrain->surface[p->x+3][p->y+i] = -1;
-				terrain->surface[p->x-1][p->y+i] = numPersonne;
+				terrain->surface[p->y+i][p->x+3] = -1;
+				terrain->surface[p->y+i][p->x-1] = numPersonne;
 
 			}
 			for(int i=0; i < 4; i++){
-				terrain->surface[p->x+i][p->y+3] = -1;
-				terrain->surface[p->x-1+i][p->y-1] = numPersonne;
+				terrain->surface[p->y+3][p->x+i] = -1;
+				terrain->surface[p->y-1][p->x-1+i] = numPersonne;
 			}
 			p->x--;
 			p->y--;
@@ -132,8 +145,8 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 		case OUEST:
 			for(int i=0; i < 4; i++){
-				terrain->surface[p->x+3][p->y+i] = -1;
-				terrain->surface[p->x-1][p->y+i] = numPersonne;
+				terrain->surface[p->y+i][p->x+3] = -1;
+				terrain->surface[p->y+i][p->x-1] = numPersonne;
 			}
 			p->x--;
 			break;
@@ -144,7 +157,10 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 void avancer(Terrain* terrain, int numPersonne){
 
-	double directions[3][2] = {{-1, -1, -1},{-1, -1, -1}};
+	double directions[3][2];
+	for(int i =0; i < 3*2; i++){
+		directions[0][i] = -1;
+	}
 
 	int centreX = terrain->personnes[numPersonne].x +2;
 	int centreY = terrain->personnes[numPersonne].y +2;
@@ -182,7 +198,8 @@ void avancer(Terrain* terrain, int numPersonne){
 	}
 
 	if(current != 3)
-		deplacement(terrain, numPersonne, directions[current][1]);
+		deplacer(terrain, numPersonne, directions[current][1]);
+
 
 }
 

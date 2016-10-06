@@ -73,7 +73,7 @@ void genererPersonnes(Terrain *terrain, int nbPersonnes){
 	while(personnesPlacees < nbPersonnes){
 		do{
 			getPosition(positions);
-		}while( !checkfree(terrain,positions) );
+		}while( !initCheckfree(terrain,positions) );
 		//printf("%d,%d\n",positions[0],positions[1]);
 
 		int pligne = positions[0];
@@ -94,7 +94,7 @@ void genererPersonnes(Terrain *terrain, int nbPersonnes){
 
 }
 
-int checkfree(Terrain *terrain, int *p){
+int initCheckfree(Terrain *terrain, int *p){
 	int free = 1;
 	int pligne = p[0];
 	int pcolonne = p[1];
@@ -116,7 +116,7 @@ void getPosition(int positions[]){
 int main(int argc, char* argv[]){
 	int ch;
 	int gd = DETECT, gm = VGAMAX;
-	initgraph(&gd,&gm,0);
+	//initgraph(&gd,&gm,0);
 
 	Terrain terrain;
 	initialiserTerrain(&terrain);
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]){
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
-	dessinTerrain(&terrain);
+	//dessinTerrain(&terrain);
 
 	switch(optionThread){
 	case 0:
@@ -151,7 +151,9 @@ int main(int argc, char* argv[]){
 		monoThread(&terrain);
 	}
 
+	//getch();
 
+	//closegraph();
 	free(terrain.personnes);
 	return 0;
 }
