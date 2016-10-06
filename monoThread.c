@@ -9,14 +9,22 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "myUtils.h"
+#include "deplacements.h"
 
-void *execution(Terrain* terrain)
+void *execution(void* arg)
 {
-    printf("Nous sommes dans le thread.\n");
+	Terrain* terrain = (Terrain*) arg;
+	int oneAlive;
 
-    for(int i=0; i < terrain->nbPersonnes; i++){
-    	printf("P%d : %d,%d\n", i, terrain->personnes[i].x, terrain->personnes[i].y);
-    }
+	do{
+		oneAlive = 0;
+	    for(int i=0; i < terrain->nbPersonnes; i++){
+	    	if(terrain->personnes[i].alive){
+	    		oneAlive =1;
+	    		avancer(terrain, i);
+	    	}
+		}
+	}while(oneAlive);
 
     pthread_exit(NULL);
 }

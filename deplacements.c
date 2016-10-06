@@ -5,8 +5,10 @@
  *      Author: epu
  */
 
-#include "myUtils.h"
 #include <math.h>
+#include <stdio.h>
+
+#include "myUtils.h"
 
 #define NORD 1
 #define NORD_OUEST 2
@@ -16,9 +18,150 @@
 
 
 
+void swap(double directions[3][2], int ligne1, int ligne2){
+	double temp0 = directions[ligne1][0];
+	double temp1 = directions[ligne1][1];
+	directions[ligne1][0] = directions[ligne2][0];
+	directions[ligne1][1] = directions[ligne2][1];
+	directions[ligne2][0] = temp0;
+	directions[ligne2][1] = temp1;
+}
+
+void ordonner(double directions[3][2]){
+	if(directions[1][0] < directions[0][0])
+		swap(directions, 0, 1);
+	if(directions[2][0] < directions[1][0])
+		swap(directions, 2, 1);
+	if(directions[1][0] < directions[0][0])
+		swap(directions, 0, 1);
+}
+
+
+int checkFree(Terrain* terrain, Personne* p, int direction){
+	if(p->x == 0) return 1;
+
+	switch(direction){
+
+	case SUD:
+		for(int i=0; i < 4; i++)
+			if(terrain->surface[p->y+4][p->x+i] != -1)
+				return 0;
+		break;
+
+	case SUD_OUEST:
+		for(int i=0; i < 3; i++)
+			if(terrain->surface[p->y+1+i][p->x-1] != -1)
+				return 0;
+		for(int i=0; i < 4; i++)
+			if(terrain->surface[p->y+4][p->x-1+i] != -1)
+				return 0;
+		break;
+
+	case NORD:
+		for(int i=0; i < 4; i++)
+			if(terrain->surface[p->y-1][p->x+i] != -1)
+				return 0;
+		break;
+
+	case NORD_OUEST:
+		for(int i=0; i < 3; i++)
+			if(terrain->surface[p->y+i][p->x-1] != -1)
+				return 0;
+		for(int i=0; i < 4; i++)
+			if(terrain->surface[p->y-1][p->x-1+i] != -1)
+				return 0;
+		break;
+
+	case OUEST:
+		for(int i=0; i < 4; i++)
+			if(terrain->surface[p->y+i][p->x-1] != -1)
+				return 0;
+		break;
+	}
+
+	return 1;
+
+}
+
+void deplacer(Terrain* terrain, int numPersonne, int direction){
+
+	Personne* p = &(terrain->personnes[numPersonne]);
+
+	if(p->x == 0){
+		p->alive = 0;
+		for(int i=0; i < 4; i++)
+			for(int j=0; j < 4; j++)
+			terrain->surface[p->y+j][p->x+i] = -1;
+
+		printf("Personne %d est sortie\n", numPersonne);
+		return;
+	}
+
+	switch(direction){
+
+		case SUD:
+			for(int i=0; i < 4; i++){
+				terrain->surface[p->y][p->x+i] = -1;
+				terrain->surface[p->y+4][p->x+i] = numPersonne;
+			}
+			p->y++;
+
+			break;
+
+		case SUD_OUEST:
+			for(int i=0; i < 3; i++){
+				terrain->surface[p->y+1+i][p->x+3] = -1;
+				terrain->surface[p->y+1+i][p->x-1] = numPersonne;
+
+			}
+			for(int i=0; i < 4; i++){
+				terrain->surface[p->y][p->x+i] = -1;
+				terrain->surface[p->y+4][p->x-1+i] = numPersonne;
+			}
+			p->x--;
+			p->y++;
+			break;
+
+		case NORD:
+			for(int i=0; i < 4; i++){
+				terrain->surface[p->y+3][p->x+i] = -1;
+				terrain->surface[p->y-1][p->x+i] = numPersonne;
+			}
+			p->y--;
+			break;
+
+		case NORD_OUEST:
+			for(int i=0; i < 3; i++){
+				terrain->surface[p->y+i][p->x+3] = -1;
+				terrain->surface[p->y+i][p->x-1] = numPersonne;
+
+			}
+			for(int i=0; i < 4; i++){
+				terrain->surface[p->y+3][p->x+i] = -1;
+				terrain->surface[p->y-1][p->x-1+i] = numPersonne;
+			}
+			p->x--;
+			p->y--;
+			break;
+
+		case OUEST:
+			for(int i=0; i < 4; i++){
+				terrain->surface[p->y+i][p->x+3] = -1;
+				terrain->surface[p->y+i][p->x-1] = numPersonne;
+			}
+			p->x--;
+			break;
+		}
+}
+
+
+
 void avancer(Terrain* terrain, int numPersonne){
 
-	double directions[3][2] = {{-1, -1, -1},{-1, -1, -1}};
+	double directions[3][2];
+	for(int i =0; i < 3*2; i++){
+		directions[0][i] = -1;
+	}
 
 	int centreX = terrain->personnes[numPersonne].x +2;
 	int centreY = terrain->personnes[numPersonne].y +2;
@@ -48,66 +191,18 @@ void avancer(Terrain* terrain, int numPersonne){
 
 	ordonner(directions);
 
+	int current = 0;
 
-
-}
-
-
-int checkFree(Terrain terrain, Personne* p, int direction){
-	switch(direction){
-
-	case SUD:
-		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x+i][p->y+4] != -1)
-				return 0;
-		break;
-
-	case SUD_OUEST:
-		for(int i=0; i < 3; i++)
-			if(terrain->surface[p->x-1][p->y+1+i] != -1)
-				return 0;
-		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1+i][p->y+4] != -1)
-				return 0;
-		break;
-
-	case NORD:
-		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x+i][p->y-1] != -1)
-				return 0;
-		break;
-
-	case NORD_OUEST:
-		for(int i=0; i < 3; i++)
-			if(terrain->surface[p->x-1][p->y+i] != -1)
-				return 0;
-		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1+i][p->y-1] != -1)
-				return 0;
-		break;
+	for(current =0; current < 3; current++){
+		if( checkFree(terrain, &(terrain->personnes[numPersonne]), directions[current][1]) )
+			break;
 	}
-	case OUEST:
-		for(int i=0; i < 4; i++)
-			if(terrain->surface[p->x-1][p->y+i] != -1)
-				return 0;
+
+	if(current != 3)
+		deplacer(terrain, numPersonne, directions[current][1]);
+
+
 }
 
 
-void ordonner(double directions[3][2]){
-	if(directions[1][0] < directions[0][0])
-		swap(directions, 0, 1);
-	if(directions[2][0] < directions[1][0])
-		swap(directions, 2, 1);
-	if(directions[1][0] < directions[0][0])
-		swap(directions, 0, 1);
-}
 
-
-void swap(double directions[3][2], int ligne1, int ligne2){
-	double temp0 = directions[ligne1][0];
-	double temp1 = directions[ligne1][1];
-	directions[ligne1][0] = directions[ligne2][0];
-	directions[ligne1][1] = directions[ligne2][1];
-	directions[ligne2][0] = temp0;
-	directions[ligne2][1] = temp1;
-}
