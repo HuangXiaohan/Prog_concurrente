@@ -11,7 +11,7 @@
 
 
 void dessinTerrain(Terrain *t){
-	int ch;
+	//int ch;
 	int gd = DETECT, gm = VGAMAX;
 	initgraph(&gd,&gm,0);
 
