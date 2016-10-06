@@ -52,16 +52,6 @@ void initialiserTerrain(Terrain *terrain){
 	//rectangle(112+DECALAGE,72+DECALAGE,127+DECALAGE,127+DECALAGE);
 	//floodfill(170,130,4);
 
-	//Sortie du mur de gauche
-	for(int i = 60; i < 68; i++)
-		for(int j = 0; j < 16; j++)
-			terrain -> surface[i][j] = -3;
-
-	//Sortie du mur de droite
-	for(int i = 56; i < 72; i++)
-		for(int j = 112; j < 128; j++)
-			terrain -> surface[i][j] = -4;
-
 }
 
 void genererPersonnes(Terrain *terrain, int nbPersonnes){

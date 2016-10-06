@@ -21,7 +21,6 @@ void *execution(void* arg)
 	    for(int i=0; i < terrain->nbPersonnes; i++){
 	    	if(terrain->personnes[i].alive){
 	    		oneAlive =1;
-	    		printf("%d(%d, %d)\n", i, terrain->personnes[i].y, terrain->personnes[i].x);
 	    		avancer(terrain, i);
 	    	}
 		}
