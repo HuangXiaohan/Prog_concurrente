@@ -52,6 +52,9 @@ int main(int argc, char* argv[]){
 	case 0:
 		monoThread(&terrain);
 		break;
+	case 1:
+		quatreThreads(&terrain);
+		break;
 	default:
 		monoThread(&terrain);
 	}

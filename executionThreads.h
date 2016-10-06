@@ -12,5 +12,7 @@
 
 int monoThread(Terrain* terrain);
 
+int quatreThreads(Terrain* terrain);
+
 
 #endif /* EXECUTIONTHREADS_H_ */
