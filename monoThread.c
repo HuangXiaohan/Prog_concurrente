@@ -11,7 +11,7 @@
 #include "myUtils.h"
 #include "deplacements.h"
 
-void *execution(void* arg)
+void *executionT0(void* arg)
 {
 	Terrain* terrain = (Terrain*) arg;
 	int oneAlive;
@@ -35,7 +35,7 @@ int monoThread(Terrain* terrain)
 
 	printf("Execution du programme avec un unique thread.\n");
 
-	if(pthread_create(&thread, NULL, execution, terrain) == -1) {
+	if(pthread_create(&thread, NULL, executionT0, terrain) == -1) {
 		perror("pthread_create");
 		return EXIT_FAILURE;
 	}
