@@ -5,9 +5,10 @@
  *      Author: epu
  */
 
-#include "myUtils.h"
 #include <math.h>
 #include <stdio.h>
+
+#include "myUtils.h"
 
 #define NORD 1
 #define NORD_OUEST 2
