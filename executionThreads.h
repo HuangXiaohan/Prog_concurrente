@@ -11,6 +11,7 @@
 #include "myUtils.h"
 
 int monoThread(Terrain* terrain);
+void multiThread(Terrain* terrain);
 
 
 #endif /* EXECUTIONTHREADS_H_ */
