@@ -45,7 +45,7 @@ int quatreThreads(Terrain* terrain)
 {
 	pthread_t threads[4];
 
-	printf("Execution du programme avec le terrain partage en 4 threads.\n");
+	//printf("Execution du programme avec le terrain partage en 4 threads.\n");
 
 	for(int i =0; i < 4; i++){
 		Arguments* arguments = (Arguments*)malloc(sizeof(Arguments));
@@ -65,7 +65,7 @@ int quatreThreads(Terrain* terrain)
 		}
 	}
 
-	printf("Fin d'execution.\n");
+	//printf("Fin d'execution.\n");
 
 	return EXIT_SUCCESS;
 

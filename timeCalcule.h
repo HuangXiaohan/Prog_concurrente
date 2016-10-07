@@ -1,0 +1,16 @@
+/*
+ * timeCalcule.h
+ *
+ *  Created on: 7 oct. 2016
+ *      Author: huang
+ */
+
+#ifndef TIMECALCULE_H_
+#define TIMECALCULE_H_
+
+
+void detectTime(double t1[5], double t2[3]);
+double calculeTime(double t[3]);
+
+
+#endif /* TIMECALCULE_H_ */

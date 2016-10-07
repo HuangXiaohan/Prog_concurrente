@@ -33,7 +33,7 @@ int monoThread(Terrain* terrain)
 {
 	pthread_t thread;
 
-	printf("Execution du programme avec un unique thread.\n");
+	//printf("Execution du programme avec un unique thread.\n");
 
 	if(pthread_create(&thread, NULL, executionT0, terrain) == -1) {
 		perror("pthread_create");
@@ -45,7 +45,7 @@ int monoThread(Terrain* terrain)
 		return EXIT_FAILURE;
 	}
 
-	printf("Fin d'execution.\n");
+	//printf("Fin d'execution.\n");
 
 	return EXIT_SUCCESS;
 

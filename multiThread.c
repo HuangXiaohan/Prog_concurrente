@@ -35,7 +35,7 @@ int multiThread(Terrain* terrain){
 	Args *args[terrain->nbPersonnes];
 
 
-	printf("Execution du programme avec un thread pour chaque personne.\n");
+	//printf("Execution du programme avec un thread pour chaque personne.\n");
 
 	for(int i = 0; i < terrain->nbPersonnes; i++){
 		args[i] = malloc(sizeof(Args));
@@ -55,7 +55,7 @@ int multiThread(Terrain* terrain){
 		}
 	}
 
-	printf("Fin de multi execution.\n");
+	//printf("Fin de multi execution.\n");
 
 	return EXIT_SUCCESS;
 }

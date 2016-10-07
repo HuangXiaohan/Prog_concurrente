@@ -93,7 +93,7 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 			for(int j=0; j < 4; j++)
 			terrain->surface[p->y+j][p->x+i] = -1;
 
-		printf("Personne %d est sortie\n", numPersonne);
+		//printf("Personne %d est sortie\n", numPersonne);
 		return;
 	}
 
