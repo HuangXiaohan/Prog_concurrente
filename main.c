@@ -14,14 +14,14 @@
 #include "initialiser.h"
 #include "myUtils.h"
 #include "executionThreads.h"
-#include "graph.h"
+//#include "graph.h"
 #include "timeCalcule.h"
 
 
 
 int main(int argc, char* argv[]){
 	int ch;
-	double start, finish,t_avrg, t_execute[5], t_calcule[3];
+	double start, finish, t_execute[5], t_calcule[3];
 	int mesure = 0;
 	//int gd = DETECT, gm = VGAMAX;
 	//initgraph(&gd,&gm,0);

@@ -8,6 +8,8 @@
 #ifndef TIMECALCULE_H_
 #define TIMECALCULE_H_
 
+#include <time.h>
+
 
 void detectTime(double t1[5], double t2[3]);
 double calculeTime(double t[3]);
