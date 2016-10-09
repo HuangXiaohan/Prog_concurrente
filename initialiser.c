@@ -2,7 +2,7 @@
  * initialiser.c
  *
  *  Created on: 6 oct. 2016
- *      Author: epu
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #include <time.h>

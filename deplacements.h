@@ -2,7 +2,7 @@
  * deplacements.h
  *
  *  Created on: 6 oct. 2016
- *      Author: epu
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #ifndef DEPLACEMENTS_H_

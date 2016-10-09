@@ -1,3 +1,10 @@
+/*
+ * graph.h
+ *
+ *  Created on: 29 sept. 2016
+ *      Author: Xiaohan Huang et Gaspard Lacroix
+ */
+
 #ifndef GRAPH_H_
 #define GRAPH_H_
 

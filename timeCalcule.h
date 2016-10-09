@@ -2,7 +2,7 @@
  * timeCalcule.h
  *
  *  Created on: 7 oct. 2016
- *      Author: huang
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #ifndef TIMECALCULE_H_

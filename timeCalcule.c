@@ -2,7 +2,7 @@
  * timeCalcule.c
  *
  *  Created on: 7 oct. 2016
- *      Author: huang
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 #include <time.h>
 #include "timeCalcule.h"

@@ -2,7 +2,7 @@
  * deplacements.c
  *
  *  Created on: 29 sept. 2016
- *      Author: epu
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #include <math.h>
@@ -87,71 +87,70 @@ void deplacer(Terrain* terrain, int numPersonne, int direction){
 
 	Personne* p = &(terrain->personnes[numPersonne]);
 
+	switch(direction){
+
+	case SUD:
+		for(int i=0; i < 4; i++){
+			terrain->surface[p->y][p->x+i] = -1;
+			terrain->surface[p->y+4][p->x+i] = numPersonne;
+		}
+		p->y++;
+
+		break;
+
+	case SUD_OUEST:
+		for(int i=0; i < 3; i++){
+			terrain->surface[p->y+1+i][p->x+3] = -1;
+			terrain->surface[p->y+1+i][p->x-1] = numPersonne;
+
+		}
+		for(int i=0; i < 4; i++){
+			terrain->surface[p->y][p->x+i] = -1;
+			terrain->surface[p->y+4][p->x-1+i] = numPersonne;
+		}
+		p->x--;
+		p->y++;
+		break;
+
+	case NORD:
+		for(int i=0; i < 4; i++){
+			terrain->surface[p->y+3][p->x+i] = -1;
+			terrain->surface[p->y-1][p->x+i] = numPersonne;
+		}
+		p->y--;
+		break;
+
+	case NORD_OUEST:
+		for(int i=0; i < 3; i++){
+			terrain->surface[p->y+i][p->x+3] = -1;
+			terrain->surface[p->y+i][p->x-1] = numPersonne;
+
+		}
+		for(int i=0; i < 4; i++){
+			terrain->surface[p->y+3][p->x+i] = -1;
+			terrain->surface[p->y-1][p->x-1+i] = numPersonne;
+		}
+		p->x--;
+		p->y--;
+		break;
+
+	case OUEST:
+		for(int i=0; i < 4; i++){
+			terrain->surface[p->y+i][p->x+3] = -1;
+			terrain->surface[p->y+i][p->x-1] = numPersonne;
+		}
+		p->x--;
+		break;
+	}
+
 	if(p->x == 0){
 		p->alive = 0;
 		for(int i=0; i < 4; i++)
 			for(int j=0; j < 4; j++)
-			terrain->surface[p->y+j][p->x+i] = -1;
+				terrain->surface[p->y+j][p->x+i] = -1;
 
 		//printf("Personne %d est sortie\n", numPersonne);
-		return;
 	}
-
-	switch(direction){
-
-		case SUD:
-			for(int i=0; i < 4; i++){
-				terrain->surface[p->y][p->x+i] = -1;
-				terrain->surface[p->y+4][p->x+i] = numPersonne;
-			}
-			p->y++;
-
-			break;
-
-		case SUD_OUEST:
-			for(int i=0; i < 3; i++){
-				terrain->surface[p->y+1+i][p->x+3] = -1;
-				terrain->surface[p->y+1+i][p->x-1] = numPersonne;
-
-			}
-			for(int i=0; i < 4; i++){
-				terrain->surface[p->y][p->x+i] = -1;
-				terrain->surface[p->y+4][p->x-1+i] = numPersonne;
-			}
-			p->x--;
-			p->y++;
-			break;
-
-		case NORD:
-			for(int i=0; i < 4; i++){
-				terrain->surface[p->y+3][p->x+i] = -1;
-				terrain->surface[p->y-1][p->x+i] = numPersonne;
-			}
-			p->y--;
-			break;
-
-		case NORD_OUEST:
-			for(int i=0; i < 3; i++){
-				terrain->surface[p->y+i][p->x+3] = -1;
-				terrain->surface[p->y+i][p->x-1] = numPersonne;
-
-			}
-			for(int i=0; i < 4; i++){
-				terrain->surface[p->y+3][p->x+i] = -1;
-				terrain->surface[p->y-1][p->x-1+i] = numPersonne;
-			}
-			p->x--;
-			p->y--;
-			break;
-
-		case OUEST:
-			for(int i=0; i < 4; i++){
-				terrain->surface[p->y+i][p->x+3] = -1;
-				terrain->surface[p->y+i][p->x-1] = numPersonne;
-			}
-			p->x--;
-			break;
-		}
 }
 
 

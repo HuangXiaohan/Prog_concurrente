@@ -2,7 +2,7 @@
  * main.c
  *
  *  Created on: 28 sept. 2016
- *      Author: huang & lacroix
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #include <stdio.h>

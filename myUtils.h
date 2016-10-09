@@ -2,7 +2,7 @@
  * myUtils.h
  *
  *  Created on: 22 sept. 2016
- *      Author: epu
+ *      Author: Xiaohan Huang et Gaspard Lacroix
  */
 
 #ifndef MYUTILS_H_
