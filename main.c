@@ -43,6 +43,21 @@ int main(int argc, char* argv[]){
 		default: printf("Options invalides\n");
 		}
 	}
+	printf("%d personnes\n", nombreDePersonnes);
+
+	switch(optionThread){
+	case 0:
+		printf("1 seul thread\n");
+		break;
+	case 1:
+		printf("Terrain divise en 4 threads\n");
+		break;
+	case 2:
+		printf("1 thread par personnes\n");
+		break;
+	default:
+		printf("1 seul thread\n");
+	}
 
 	// Creation des personnes sur le terrain
 	terrain.nbPersonnes = nombreDePersonnes;
@@ -52,6 +67,7 @@ int main(int argc, char* argv[]){
 	//dessinTerrain(&terrain);
 
 	if(mesure == 1){
+		printf("Option mesures\n");
 		for(int i = 0; i < 5; i++){
 			start = clock();
 			switch(optionThread){
@@ -72,7 +88,7 @@ int main(int argc, char* argv[]){
 		}
 		detectTime(t_execute, t_calcule);
 		double t_avrg = calculeTime( t_calcule);
-		printf( "Temps d'exécution : %f seconds\n", t_avrg/ CLOCKS_PER_SEC);
+		printf( "Temps d'exécution moyen : %f secondes\n", t_avrg/ CLOCKS_PER_SEC);
 	}
 	else{
 		switch(optionThread){
