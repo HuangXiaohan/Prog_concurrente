@@ -21,7 +21,6 @@
 
 int main(int argc, char* argv[]){
 	int ch;
-	double start, finish, t_execute[5], t_calcule[3];
 	int mesure = 0;
 	//int gd = DETECT, gm = VGAMAX;
 	//initgraph(&gd,&gm,0);
@@ -67,9 +66,18 @@ int main(int argc, char* argv[]){
 	//dessinTerrain(&terrain);
 
 	if(mesure == 1){
+
+		double cpu_time, t_cpu[5], t_calcule[3];
+		double usr_time, t_usr[5];
 		printf("Option mesures\n");
+
+		struct timeval user;
 		for(int i = 0; i < 5; i++){
-			start = clock();
+			printf("Execution %d\n", i+1);
+
+			gettimeofday(&user, NULL);
+			usr_time = user.tv_sec + user.tv_usec/pow(10,6);
+			cpu_time = clock();
 			switch(optionThread){
 				case 0:
 					monoThread(&terrain);
@@ -83,12 +91,19 @@ int main(int argc, char* argv[]){
 				default:
 					monoThread(&terrain);
 			}
-			finish = clock();
-			t_execute[i] = finish - start;
+			t_cpu[i] = clock() - cpu_time;
+			gettimeofday(&user, NULL);
+			t_usr[i] = user.tv_sec + (user.tv_usec/pow(10,6)) - usr_time;
+
+			//printf("cpu = %f\tusr = %f\n", t_cpu[i]/CLOCKS_PER_SEC, t_usr[i]);
 		}
-		detectTime(t_execute, t_calcule);
-		double t_avrg = calculeTime( t_calcule);
-		printf( "Temps d'exécution moyen : %f secondes\n", t_avrg/ CLOCKS_PER_SEC);
+		detectTime(t_cpu, t_calcule);
+		double cpu_avrg = calculeTime( t_calcule);
+		detectTime(t_usr, t_calcule);
+		double usr_avrg = calculeTime( t_calcule);
+		printf( "Temps consommation CPU moyen : %f secondes\n", cpu_avrg/ CLOCKS_PER_SEC);
+		printf( "Temps utilisateur moyen : %f secondes\n", usr_avrg);
+
 	}
 	else{
 		switch(optionThread){
