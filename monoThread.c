@@ -29,7 +29,7 @@ void *executionT0(void* arg)
     pthread_exit(NULL);
 }
 
-int monoThread(Terrain* terrain)
+int monoThread_e1(Terrain* terrain)
 {
 	pthread_t thread;
 
@@ -49,5 +49,9 @@ int monoThread(Terrain* terrain)
 
 	return EXIT_SUCCESS;
 
+}
+
+int monoThread_e2(Terrain* terrain){
+	return EXIT_SUCCESS;
 }
 

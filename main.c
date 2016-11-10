@@ -21,20 +21,32 @@ void excuteThread(int opEtap, int opThread, Terrain terrain){
 	if(opEtap == 1){
 		switch(opThread){
 		case 0:
-			monoThread(&terrain);
+			monoThread_e1(&terrain);
 			break;
 		case 2:
-			multiThread(&terrain);
+			multiThread_e1(&terrain);
 			break;
 		case 1:
-			quatreThreads(&terrain);
+			quatreThreads_e1(&terrain);
 			break;
 		default:
-			monoThread(&terrain);
+			monoThread_e1(&terrain);
 		}
 	}
 	else if(opEtap == 2){
-		printf("lalalalala\n");
+		switch(opThread){
+		case 0:
+			monoThread_e2(&terrain);
+			break;
+		case 2:
+			multiThread_e2(&terrain);
+			break;
+		case 1:
+			quatreThreads_e2(&terrain);
+			break;
+		default:
+			monoThread_e2(&terrain);
+		}
 	}
 }
 

@@ -41,7 +41,7 @@ void *executionT1(void* arg)
     pthread_exit(NULL);
 }
 
-int quatreThreads(Terrain* terrain)
+int quatreThreads_e1(Terrain* terrain)
 {
 	pthread_t threads[4];
 
@@ -69,5 +69,9 @@ int quatreThreads(Terrain* terrain)
 
 	return EXIT_SUCCESS;
 
+}
+
+int quatreThreads_e2(Terrain* terrain){
+	return EXIT_SUCCESS;
 }
 

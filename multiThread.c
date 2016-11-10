@@ -30,7 +30,7 @@ void *multi_execution(void* arg){
 }
 
 
-int multiThread(Terrain* terrain){
+int multiThread_e1(Terrain* terrain){
 	pthread_t thread[terrain->nbPersonnes];
 	Args *args[terrain->nbPersonnes];
 
@@ -60,6 +60,9 @@ int multiThread(Terrain* terrain){
 	return EXIT_SUCCESS;
 }
 
+int multiThread_e2(Terrain* terrain){
+	return EXIT_SUCCESS;
+}
 
 
 
