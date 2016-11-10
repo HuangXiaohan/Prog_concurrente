@@ -17,7 +17,26 @@
 //#include "graph.h"
 #include "timeCalcule.h"
 
-
+void excuteThread(int opEtap, int opThread, Terrain terrain){
+	if(opEtap == 1){
+		switch(opThread){
+		case 0:
+			monoThread(&terrain);
+			break;
+		case 2:
+			multiThread(&terrain);
+			break;
+		case 1:
+			quatreThreads(&terrain);
+			break;
+		default:
+			monoThread(&terrain);
+		}
+	}
+	else if(opEtap == 2){
+		printf("lalalalala\n");
+	}
+}
 
 int main(int argc, char* argv[]){
 	int ch;
@@ -30,33 +49,55 @@ int main(int argc, char* argv[]){
 
 	int nombreDePersonnes=10; // Nombre de personnes par défaut
 	int optionThread = 0;
+	int optionEtap = 1;
 
 	// Lecture des arguments
-	while((ch = getopt(argc,argv,"mp:t:")) != -1){
+	while((ch = getopt(argc,argv,"mp:t:e:")) != -1){
 		switch(ch){
 		case 'm': mesure = 1; break;
 		case 'p':
 			nombreDePersonnes = pow(2,(optarg[0]-'0'));
 			break;
 		case 't': optionThread = atoi(optarg); break;
+		case 'e': optionEtap = atoi(optarg); break;
 		default: printf("Options invalides\n");
 		}
 	}
 	printf("%d personnes\n", nombreDePersonnes);
 
-	switch(optionThread){
-	case 0:
-		printf("1 seul thread\n");
-		break;
+	switch(optionEtap){
 	case 1:
-		printf("Terrain divise en 4 threads\n");
+		switch(optionThread){
+		case 0:
+			printf("Etap 1: 1 seul thread\n");
+			break;
+		case 1:
+			printf("Etap 1: Terrain divise en 4 threads\n");
+			break;
+		case 2:
+			printf("Etap 1: 1 thread par personnes\n");
+			break;
+		default:
+			printf("Etap 1: 1 seul thread\n");
+		}
 		break;
 	case 2:
-		printf("1 thread par personnes\n");
+		switch(optionThread){
+		case 0:
+			printf("Etap 2: 1 seul thread\n");
+			break;
+		case 1:
+			printf("Etap 2: Terrain divise en 4 threads\n");
+			break;
+		case 2:
+			printf("Etap 2: 1 thread par personnes\n");
+			break;
+		default:
+			printf("Etap 2: 1 seul thread\n");
+		}
 		break;
-	default:
-		printf("1 seul thread\n");
 	}
+
 
 	// Creation des personnes sur le terrain
 	terrain.nbPersonnes = nombreDePersonnes;
@@ -78,19 +119,9 @@ int main(int argc, char* argv[]){
 			gettimeofday(&user, NULL);
 			usr_time = user.tv_sec + user.tv_usec/pow(10,6);
 			cpu_time = clock();
-			switch(optionThread){
-				case 0:
-					monoThread(&terrain);
-					break;
-				case 2:
-					multiThread(&terrain);
-					break;
-				case 1:
-					quatreThreads(&terrain);
-					break;
-				default:
-					monoThread(&terrain);
-			}
+
+			excuteThread(optionEtap, optionThread, terrain);
+
 			t_cpu[i] = clock() - cpu_time;
 			gettimeofday(&user, NULL);
 			t_usr[i] = user.tv_sec + (user.tv_usec/pow(10,6)) - usr_time;
@@ -106,19 +137,7 @@ int main(int argc, char* argv[]){
 
 	}
 	else{
-		switch(optionThread){
-		case 0:
-			monoThread(&terrain);
-			break;
-		case 2:
-			multiThread(&terrain);
-			break;
-		case 1:
-			quatreThreads(&terrain);
-			break;
-		default:
-			monoThread(&terrain);
-		}
+		excuteThread(optionEtap, optionThread, terrain);
 	}
 
 
