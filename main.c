@@ -17,38 +17,7 @@
 //#include "graph.h"
 #include "timeCalcule.h"
 
-void excuteThread(int opEtap, int opThread, Terrain terrain){
-	if(opEtap == 1){
-		switch(opThread){
-		case 0:
-			monoThread_e1(&terrain);
-			break;
-		case 2:
-			multiThread_e1(&terrain);
-			break;
-		case 1:
-			quatreThreads_e1(&terrain);
-			break;
-		default:
-			monoThread_e1(&terrain);
-		}
-	}
-	else if(opEtap == 2){
-		switch(opThread){
-		case 0:
-			monoThread_e2(&terrain);
-			break;
-		case 2:
-			multiThread_e2(&terrain);
-			break;
-		case 1:
-			quatreThreads_e2(&terrain);
-			break;
-		default:
-			monoThread_e2(&terrain);
-		}
-	}
-}
+
 
 int main(int argc, char* argv[]){
 	int ch;
@@ -62,6 +31,7 @@ int main(int argc, char* argv[]){
 	int nombreDePersonnes=10; // Nombre de personnes par défaut
 	int optionThread = 0;
 	int optionEtap = 1;
+	int (*scenario)(Terrain*); // Pointeur sur fonction qui permettra d'indiquer quel scenario effectuer
 
 	// Lecture des arguments
 	while((ch = getopt(argc,argv,"mp:t:e:")) != -1){
@@ -81,32 +51,44 @@ int main(int argc, char* argv[]){
 	case 1:
 		switch(optionThread){
 		case 0:
-			printf("Etap 1: 1 seul thread\n");
+			printf("Etape 1: 1 seul thread\n");
+			scenario = monoThread_e1;
 			break;
 		case 1:
-			printf("Etap 1: Terrain divise en 4 threads\n");
+			printf("Etape 1: Terrain divise en 4 threads\n");
+			scenario = quatreThreads_e1;
 			break;
 		case 2:
-			printf("Etap 1: 1 thread par personnes\n");
+			printf("Etape 1: 1 thread par personne\n");
+			scenario = multiThread_e1;
 			break;
 		default:
-			printf("Etap 1: 1 seul thread\n");
+			printf("Etape 1: 1 seul thread\n");
+			scenario = monoThread_e1;
 		}
 		break;
 	case 2:
 		switch(optionThread){
 		case 0:
-			printf("Etap 2: 1 seul thread\n");
+			printf("Etape 2: 1 seul thread\n");
+			scenario = monoThread_e2;
 			break;
 		case 1:
-			printf("Etap 2: Terrain divise en 4 threads\n");
+			printf("Etape 2: Terrain divise en 4 threads\n");
+			scenario = quatreThreads_e2;
 			break;
 		case 2:
-			printf("Etap 2: 1 thread par personnes\n");
+			printf("Etape 2: 1 thread par personne\n");
+			scenario = multiThread_e2;
 			break;
 		default:
-			printf("Etap 2: 1 seul thread\n");
+			printf("Etape 2: 1 seul thread\n");
+			scenario = monoThread_e2;
 		}
+		break;
+	default:
+		printf("Etap 1: 1 seul thread\n");
+		scenario = monoThread_e1;
 		break;
 	}
 
@@ -129,27 +111,27 @@ int main(int argc, char* argv[]){
 			printf("Execution %d\n", i+1);
 
 			gettimeofday(&user, NULL);
-			usr_time = user.tv_sec + user.tv_usec/pow(10,6);
+			usr_time = user.tv_usec;
 			cpu_time = clock();
 
-			excuteThread(optionEtap, optionThread, terrain);
+			(*scenario)(&terrain);
 
 			t_cpu[i] = clock() - cpu_time;
 			gettimeofday(&user, NULL);
-			t_usr[i] = user.tv_sec + (user.tv_usec/pow(10,6)) - usr_time;
+			t_usr[i] = user.tv_usec - usr_time;
 
-			//printf("cpu = %f\tusr = %f\n", t_cpu[i]/CLOCKS_PER_SEC, t_usr[i]);
+			//printf("cpu = %f\tusr = %f\n", t_cpu[i]/CLOCKS_PER_SEC, t_usr[i]/pow(10,6));
 		}
 		detectTime(t_cpu, t_calcule);
 		double cpu_avrg = calculeTime( t_calcule);
 		detectTime(t_usr, t_calcule);
 		double usr_avrg = calculeTime( t_calcule);
 		printf( "Temps consommation CPU moyen : %f secondes\n", cpu_avrg/ CLOCKS_PER_SEC);
-		printf( "Temps utilisateur moyen : %f secondes\n", usr_avrg);
+		printf( "Temps utilisateur moyen : %f secondes\n", usr_avrg/ pow(10,6));
 
 	}
 	else{
-		excuteThread(optionEtap, optionThread, terrain);
+		(*scenario)(&terrain);
 	}
 
 

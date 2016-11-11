@@ -10,10 +10,13 @@
 
 #include "myUtils.h"
 
-int monoThread(Terrain* terrain);
-void multiThread(Terrain* terrain);
+int monoThread_e1(Terrain* terrain);
+int quatreThreads_e1(Terrain* terrain);
+int multiThread_e1(Terrain* terrain);
 
-int quatreThreads(Terrain* terrain);
+int monoThread_e2(Terrain* terrain);
+int quatreThreads_e2(Terrain* terrain);
+int multiThread_e2(Terrain* terrain);
 
 
 #endif /* EXECUTIONTHREADS_H_ */
