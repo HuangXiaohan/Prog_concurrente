@@ -57,11 +57,13 @@ int multiThread_e1(Terrain* terrain){
 	return EXIT_SUCCESS;
 }
 
-static sem_t* semaphore;
-static int* the_end;
+sem_t* semaphore;
+int* the_end;
 
 
 void *multi_execution_e2(void* arg){
+	pthread_detach(pthread_self());
+
 	Args* args = (Args*) arg;
 	Terrain* terrain = args->terrain;
 	int pnb = args->personNb;
@@ -106,11 +108,9 @@ int multiThread_e2(Terrain* terrain){
 		sem_destroy(&semaphore[i]);
 	}
 
+	free(semaphore);
+	free(the_end);
+
 
 	return EXIT_SUCCESS;
 }
-
-
-
-
-

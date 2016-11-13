@@ -56,12 +56,14 @@ int monoThread_e1(Terrain* terrain)
 
 
 
-static sem_t semaphore;
-static int the_end;
+sem_t semaphore;
+int the_end;
 
 
 void *executionT0_e2(void* arg)
 {
+	pthread_detach(pthread_self());
+
 	Terrain* terrain = (Terrain*) arg;
 
 	executionT0(terrain);

@@ -139,7 +139,8 @@ int main(int argc, char* argv[]){
 
 	//closegraph();
 	free(terrain.personnes);
-	return 0;
+
+    return 0;
 }
 
 

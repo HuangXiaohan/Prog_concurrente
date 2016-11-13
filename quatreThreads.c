@@ -75,12 +75,14 @@ int quatreThreads_e1(Terrain* terrain)
 }
 
 
-static sem_t semaphore[4];
-static int the_end[4];
+sem_t semaphore[4];
+int the_end[4];
 
 
 void *executionT1_e2(void* arg)
 {
+	pthread_detach(pthread_self());
+
 	Arguments* arguments = (Arguments*) arg;
 	Terrain* terrain = arguments->terrain;
 	int numThread = arguments->numThread;
