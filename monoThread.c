@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include "myUtils.h"
 #include "deplacements.h"
 
-void *executionT0(void* arg)
+void executionT0(Terrain* terrain)
 {
-	Terrain* terrain = (Terrain*) arg;
 	int oneAlive;
 
 	do{
@@ -25,6 +25,13 @@ void *executionT0(void* arg)
 	    	}
 		}
 	}while(oneAlive);
+}
+
+void *executionT0_e1(void* arg)
+{
+	Terrain* terrain = (Terrain*) arg;
+
+	executionT0(terrain);
 
     pthread_exit(NULL);
 }
@@ -33,9 +40,7 @@ int monoThread_e1(Terrain* terrain)
 {
 	pthread_t thread;
 
-	//printf("Execution du programme avec un unique thread.\n");
-
-	if(pthread_create(&thread, NULL, executionT0, terrain) == -1) {
+	if(pthread_create(&thread, NULL, executionT0_e1, terrain) == -1) {
 		perror("pthread_create");
 		return EXIT_FAILURE;
 	}
@@ -45,13 +50,47 @@ int monoThread_e1(Terrain* terrain)
 		return EXIT_FAILURE;
 	}
 
-	//printf("Fin d'execution.\n");
-
 	return EXIT_SUCCESS;
 
 }
 
+
+
+static sem_t semaphore;
+static int the_end;
+
+
+void *executionT0_e2(void* arg)
+{
+	Terrain* terrain = (Terrain*) arg;
+
+	executionT0(terrain);
+
+	the_end = 1;
+	sem_post (&semaphore);
+
+    pthread_exit(NULL);
+}
+
 int monoThread_e2(Terrain* terrain){
+
+	pthread_t thread;
+
+	the_end = 0;
+	sem_init(&semaphore, 0, 0);
+
+	if(pthread_create(&thread, NULL, executionT0_e2, terrain) == -1) {
+		perror("pthread_create");
+		return EXIT_FAILURE;
+	}
+
+	// Attente de la fin du thread
+	while (!the_end) {
+		sem_wait (&semaphore);
+	}
+	sem_destroy(&semaphore);
+
+
 	return EXIT_SUCCESS;
 }
 
