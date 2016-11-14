@@ -165,7 +165,7 @@ void avancer(Terrain* terrain, int numPersonne){
 	int centreX = terrain->personnes[numPersonne].x +2;
 	int centreY = terrain->personnes[numPersonne].y +2;
 
-	if(centreY <= LARGEUR/2){
+	if(terrain->personnes[numPersonne].y < LARGEUR/2){
 		double distance = sqrt( pow((centreX+10),2) + pow((centreY+1-63),2) );
 		directions[0][1] = SUD;
 		directions[0][0] = distance;

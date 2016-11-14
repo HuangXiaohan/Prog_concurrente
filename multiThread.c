@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <sched.h>
 #include "myUtils.h"
 #include "deplacements.h"
 
@@ -27,7 +28,7 @@ void *multi_execution_e1(void* arg){
 	while(terrain->personnes[pnb].alive)
 		avancer(terrain, pnb);
 
-    pthread_exit(NULL);
+	pthread_exit(NULL);
 }
 
 
@@ -60,6 +61,8 @@ int multiThread_e1(Terrain* terrain){
 sem_t* semaphore;
 int* the_end;
 
+sem_t pixel[LARGEUR][LONGUEUR];
+
 
 void *multi_execution_e2(void* arg){
 	pthread_detach(pthread_self());
@@ -69,13 +72,90 @@ void *multi_execution_e2(void* arg){
 	int pnb = args->personNb;
 	free(args);
 
-	while(terrain->personnes[pnb].alive)
-		avancer(terrain, pnb);
+	while(terrain->personnes[pnb].alive){
+		sched_yield();
+
+		//printf("%d : %d,%d\n", pnb, terrain->personnes[pnb].x, terrain->personnes[pnb].y);
+
+		if(terrain->personnes[pnb].y < LARGEUR/2){
+			int sem_x = terrain->personnes[pnb].x +3;
+			int sem_y = terrain->personnes[pnb].y;
+
+			sem_wait(&pixel[sem_y][sem_x]);
+			for(int i=1 ; i < 4; i++){
+				sem_wait(&pixel[sem_y][sem_x-i]);
+				sem_wait(&pixel[sem_y+i][sem_x]);
+			}
+			for(int i=0 ; i < 4; i++){
+				sem_wait(&pixel[sem_y+i][sem_x-4]);
+				sem_wait(&pixel[sem_y+4][sem_x-i]);
+			}
+			sem_wait(&pixel[sem_y+4][sem_x-4]);
+
+
+			avancer(terrain, pnb);
+
+			sem_post(&pixel[sem_y][sem_x]);
+			for(int i=1 ; i < 4; i++){
+				sem_post(&pixel[sem_y][sem_x-i]);
+				sem_post(&pixel[sem_y+i][sem_x]);
+			}
+
+			for(int i=0 ; i < 4; i++){
+				sem_post(&pixel[sem_y+i][sem_x-4]);
+				sem_post(&pixel[sem_y+4][sem_x-i]);
+			}
+			sem_post(&pixel[sem_y+4][sem_x-4]);
+
+		}
+		else{
+			int sem_x = terrain->personnes[pnb].x +3;
+			int sem_y = terrain->personnes[pnb].y +3;
+
+			sem_wait(&pixel[sem_y][sem_x]);
+			for(int i=1 ; i < 4; i++){
+				sem_wait(&pixel[sem_y][sem_x-i]);
+				sem_wait(&pixel[sem_y-i][sem_x]);
+			}
+
+			for(int i=0 ; i < 4; i++){
+				sem_wait(&pixel[sem_y-i][sem_x-4]);
+				sem_wait(&pixel[sem_y-4][sem_x-i]);
+			}
+			sem_wait(&pixel[sem_y-4][sem_x-4]);
+
+
+			avancer(terrain, pnb);
+
+			sem_post(&pixel[sem_y][sem_x]);
+			for(int i=1 ; i < 4; i++){
+				sem_post(&pixel[sem_y][sem_x-i]);
+				sem_post(&pixel[sem_y-i][sem_x]);
+			}
+
+			for(int i=0 ; i < 4; i++){
+				sem_post(&pixel[sem_y-i][sem_x-4]);
+				sem_post(&pixel[sem_y-4][sem_x-i]);
+			}
+			sem_post(&pixel[sem_y-4][sem_x-4]);
+
+		}
+	}
+	/*
+	printf("%d fini\n", pnb);
+	for(int i =0; i < 8; i++){
+		for(int j = 0; j < 16; j++){
+			//sem_getvalue(&pixel[60+i][j], &n);
+			printf("%d,", terrain->surface[60+i][j]);
+		}
+		printf("\n");
+	}*/
+
 
 	the_end[pnb] = 1;
 	sem_post (&semaphore[pnb]);
 
-    pthread_exit(NULL);
+	pthread_exit(NULL);
 }
 
 int multiThread_e2(Terrain* terrain){
@@ -84,6 +164,11 @@ int multiThread_e2(Terrain* terrain){
 
 	semaphore = (sem_t*)malloc(sizeof(sem_t) * terrain->nbPersonnes);
 	the_end = (int*) malloc(sizeof(int) * terrain->nbPersonnes);
+
+
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			sem_init(&pixel[i][j], 0, 1);
 
 
 	for(int i = 0; i < terrain->nbPersonnes; i++){
@@ -108,9 +193,12 @@ int multiThread_e2(Terrain* terrain){
 		sem_destroy(&semaphore[i]);
 	}
 
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			sem_destroy(&pixel[i][j]);
+
 	free(semaphore);
 	free(the_end);
-
 
 	return EXIT_SUCCESS;
 }

@@ -87,7 +87,7 @@ int main(int argc, char* argv[]){
 		}
 		break;
 	default:
-		printf("Etap 1: 1 seul thread\n");
+		printf("Etape 1: 1 seul thread\n");
 		scenario = monoThread_e1;
 		break;
 	}
