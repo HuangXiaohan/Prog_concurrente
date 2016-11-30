@@ -12,8 +12,8 @@
 
 void dessinTerrain(Terrain *t){
 	//int ch;
-	int gd = DETECT, gm = VGAMAX;
-	initgraph(&gd,&gm,0);
+	//int gd = DETECT, gm = VGAMAX;
+	//initgraph(&gd,&gm,0);
 
 	//dessin un rectangle de terrain
 	rectangle(50,50,LONGUEUR+DECALAGE,LARGEUR+DECALAGE);
@@ -40,9 +40,16 @@ void dessinTerrain(Terrain *t){
 		rectangle(t->personnes[i].x + DECALAGE, t->personnes[i].y + DECALAGE, t->personnes[i].x + DECALAGE+3, t->personnes[i].y + DECALAGE+3);
 	}
 
-	closegraph();
+	//closegraph();
 }
 
+void updatePosPersonne(int prevx, int prevy, int newx, int newy){
+	setcolor(BLACK);
+	rectangle(prevx + DECALAGE, prevy + DECALAGE, prevx + DECALAGE+3, prevy + DECALAGE+3);
+
+	setcolor(RED);
+	rectangle(newx + DECALAGE, newy + DECALAGE, newx + DECALAGE+3, newy + DECALAGE+3);
+}
 
 
 

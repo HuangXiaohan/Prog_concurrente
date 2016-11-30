@@ -14,7 +14,7 @@
 #include "initialiser.h"
 #include "myUtils.h"
 #include "executionThreads.h"
-//#include "graph.h"
+#include "graph.h"
 #include "timeCalcule.h"
 
 
@@ -22,8 +22,8 @@
 int main(int argc, char* argv[]){
 	int ch;
 	int mesure = 0;
-	//int gd = DETECT, gm = VGAMAX;
-	//initgraph(&gd,&gm,0);
+	int gd = DETECT, gm = VGAMAX;
+	initgraph(&gd,&gm,0);
 
 	Terrain terrain;
 	initialiserTerrain(&terrain);
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]){
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
-	//dessinTerrain(&terrain);
+	dessinTerrain(&terrain);
 
 	if(mesure == 1){
 
@@ -135,9 +135,8 @@ int main(int argc, char* argv[]){
 	}
 
 
-	//getch();
-
-	//closegraph();
+	getch();
+	closegraph();
 	free(terrain.personnes);
 
     return 0;
