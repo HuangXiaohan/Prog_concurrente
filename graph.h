@@ -18,5 +18,6 @@
 
 void dessinTerrain(Terrain *t);
 
+void updatePosPersonne(int prevx, int prevy, int newx, int newy);
 
 #endif /* GRAPH_H_*/
