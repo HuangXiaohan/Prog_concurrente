@@ -11,6 +11,7 @@
 #include <semaphore.h>
 #include "myUtils.h"
 #include "deplacements.h"
+#include "monitor.h"
 
 typedef struct{
 	Terrain* terrain;
@@ -200,14 +201,72 @@ int quatreThreads_e2(Terrain* terrain){
 /*******************************************************************************************************
  * SCENARIO E3
  *******************************************************************************************************/
+Monitor moniteurs[LARGEUR][LONGUEUR];
+
 void *executionT1_e3(void* arg)
 {
+	pthread_detach(pthread_self());
+
 	Arguments* arguments = (Arguments*) arg;
 	Terrain* terrain = arguments->terrain;
 	int numThread = arguments->numThread;
 	free(arguments);
 
-	executionT1(terrain, numThread);
+
+	int largeur = LONGUEUR/4;
+	int oneAlive;
+
+	do{
+		oneAlive = 0;
+		for(int i=0; i < terrain->nbPersonnes; i++){
+			if(terrain->personnes[i].alive && terrain->personnes[i].x >= largeur*numThread){
+				oneAlive =1;
+
+				if(terrain->personnes[i].x < largeur*(numThread+1)){
+
+					int sem_x = terrain->personnes[i].x, sem_y = terrain->personnes[i].y;
+					int bord = (sem_x >= largeur*(numThread+1)-4 || (sem_x < largeur*numThread +4 && numThread != 0))? 1 : 0;
+
+					if(bord){
+						if(sem_y < LARGEUR/2){
+							sem_x += 3;
+						}else{
+							sem_x += 3;
+							sem_y -= 1;
+						}
+
+						verrouille_monitor(&moniteurs[sem_y][sem_x]);
+						for(int i=1 ; i < 4; i++){
+							verrouille_monitor(&moniteurs[sem_y][sem_x-i]);
+							verrouille_monitor(&moniteurs[sem_y+i][sem_x]);
+						}
+						for(int i=0 ; i < 4; i++){
+							verrouille_monitor(&moniteurs[sem_y+i][sem_x-4]);
+							verrouille_monitor(&moniteurs[sem_y+4][sem_x-i]);
+						}
+						verrouille_monitor(&moniteurs[sem_y+4][sem_x-4]);
+					}
+
+					avancer(terrain, i);
+
+					if(bord){
+						deverrouille_monitor(&moniteurs[sem_y][sem_x]);
+						for(int i=1 ; i < 4; i++){
+							deverrouille_monitor(&moniteurs[sem_y][sem_x-i]);
+							deverrouille_monitor(&moniteurs[sem_y+i][sem_x]);
+						}
+
+						for(int i=0 ; i < 4; i++){
+							deverrouille_monitor(&moniteurs[sem_y+i][sem_x-4]);
+							deverrouille_monitor(&moniteurs[sem_y+4][sem_x-i]);
+						}
+						deverrouille_monitor(&moniteurs[sem_y+4][sem_x-4]);
+					}
+				}
+			}
+		}
+	}while(oneAlive);
+
 
 	the_end[numThread] = 1;
 	sem_post (&semaphore[numThread]);
@@ -218,6 +277,10 @@ void *executionT1_e3(void* arg)
 int quatreThreads_e3(Terrain* terrain){
 
 	pthread_t threads[4];
+
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			initialise_monitor(&moniteurs[i][j]);
 
 	for(int i =0; i < 4; i++){
 		the_end[i] = 0;
@@ -241,6 +304,10 @@ int quatreThreads_e3(Terrain* terrain){
 		sem_destroy(&semaphore[i]);
 	}
 
+
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			detruit_monitor(&moniteurs[i][j]);
+
 	return EXIT_SUCCESS;
 }
-
