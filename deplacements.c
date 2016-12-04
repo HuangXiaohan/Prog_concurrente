@@ -7,16 +7,15 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <unistd.h>
 
 #include "myUtils.h"
-#include "graph.h"
 
-#define NORD 1
-#define NORD_OUEST 2
-#define OUEST 3
-#define SUD_OUEST 4
-#define SUD 5
+#ifdef GRAPHICS
+	#include <unistd.h>
+	#include "graph.h"
+#endif
+
+enum{NORD, NORD_OUEST, OUEST, SUD_OUEST, SUD};
 
 
 
@@ -203,15 +202,19 @@ void avancer(Terrain* terrain, int numPersonne){
 			break;
 	}
 
+#ifdef GRAPHICS
 	int prevx = terrain->personnes[numPersonne].x;
 	int prevy = terrain->personnes[numPersonne].y;
+#endif
 
 	if(current != 3)
 		deplacer(terrain, numPersonne, directions[current][1]);
 		//printf("%d : %d,%d\n", numPersonne, terrain->personnes[numPersonne].x, terrain->personnes[numPersonne].y);
 
+#ifdef GRAPHICS
 	updatePosPersonne(prevx, prevy, terrain->personnes[numPersonne].x, terrain->personnes[numPersonne].y);
 	usleep(2000);
+#endif
 }
 
 

@@ -11,21 +11,27 @@
 #include <getopt.h>
 #include <math.h>
 
+#ifdef GRAPHICS
+	#include <X11/Xlib.h>
+	#include "graph.h"
+#endif
+
 
 #include "initialiser.h"
 #include "myUtils.h"
 #include "executionThreads.h"
-#include "graph.h"
 #include "timeCalcule.h"
 
 
 
 int main(int argc, char* argv[]){
+#ifdef GRAPHICS
+	XInitThreads();
+#endif
+
 	int ch;
 	int mesure = 0;
-	int gd = DETECT, gm = VGAMAX;
-	XInitThreads();
-	initgraph(&gd,&gm,0);
+
 
 	Terrain terrain;
 	initialiserTerrain(&terrain);
@@ -100,7 +106,13 @@ int main(int argc, char* argv[]){
 	terrain.personnes = (Personne*)malloc(sizeof(Personne)*nombreDePersonnes);
 	genererPersonnes(&terrain, nombreDePersonnes);
 
+#ifdef GRAPHICS
+	int gd = DETECT, gm;
+	initgraph(&gd,&gm,0);
 	dessinTerrain(&terrain);
+	mesure = 0;
+	sleep(1);
+#endif
 
 	if(mesure == 1){
 
@@ -136,9 +148,11 @@ int main(int argc, char* argv[]){
 		(*scenario)(&terrain);
 	}
 
-
+#ifdef GRAPHICS
 	getch();
 	closegraph();
+#endif
+
 	free(terrain.personnes);
 
     return 0;

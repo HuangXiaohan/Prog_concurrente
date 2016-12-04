@@ -1,0 +1,9 @@
+Pour utiliser l'affichage du terrain :
+
+Sous éclipse :
+Clique doit sur le projet > Properties > C/C++ Buils > Settings > Cross GCC Compiler > Symbols
+Dans Defined symbols (-D), ajouter : GRAPHICS
+Recompiler et le terrain s'affichera
+
+Pour enlever l'affichage :
+Dans Defined symbols (-D), supprimer : GRAPHICS

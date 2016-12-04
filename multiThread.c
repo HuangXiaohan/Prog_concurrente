@@ -77,69 +77,44 @@ void *multi_execution_e2(void* arg){
 
 		//printf("%d : %d,%d\n", pnb, terrain->personnes[pnb].x, terrain->personnes[pnb].y);
 
+		int sem_x = terrain->personnes[pnb].x, sem_y = terrain->personnes[pnb].y, delta;
+		int  milieu = (sem_y >= (LARGEUR/2) -4 && sem_y < (LARGEUR/2) +4)? 1 : 0;
+
 		if(terrain->personnes[pnb].y < LARGEUR/2){
-			int sem_x = terrain->personnes[pnb].x +3;
-			int sem_y = terrain->personnes[pnb].y;
-
-			sem_wait(&pixel[sem_y][sem_x]);
-			for(int i=1 ; i < 4; i++){
-				sem_wait(&pixel[sem_y][sem_x-i]);
-				sem_wait(&pixel[sem_y+i][sem_x]);
-			}
-			for(int i=0 ; i < 4; i++){
-				sem_wait(&pixel[sem_y+i][sem_x-4]);
-				sem_wait(&pixel[sem_y+4][sem_x-i]);
-			}
-			sem_wait(&pixel[sem_y+4][sem_x-4]);
-
-
-			avancer(terrain, pnb);
-
-			sem_post(&pixel[sem_y][sem_x]);
-			for(int i=1 ; i < 4; i++){
-				sem_post(&pixel[sem_y][sem_x-i]);
-				sem_post(&pixel[sem_y+i][sem_x]);
-			}
-
-			for(int i=0 ; i < 4; i++){
-				sem_post(&pixel[sem_y+i][sem_x-4]);
-				sem_post(&pixel[sem_y+4][sem_x-i]);
-			}
-			sem_post(&pixel[sem_y+4][sem_x-4]);
-
+			sem_x += 3;
+			delta = 1;
+		}else{
+			sem_x += 3;
+			sem_y += 3;
+			delta = -1;
 		}
-		else{
-			int sem_x = terrain->personnes[pnb].x +3;
-			int sem_y = terrain->personnes[pnb].y +3;
 
-			sem_wait(&pixel[sem_y][sem_x]);
-			for(int i=1 ; i < 4; i++){
-				sem_wait(&pixel[sem_y][sem_x-i]);
-				sem_wait(&pixel[sem_y-i][sem_x]);
-			}
-
-			for(int i=0 ; i < 4; i++){
-				sem_wait(&pixel[sem_y-i][sem_x-4]);
-				sem_wait(&pixel[sem_y-4][sem_x-i]);
-			}
-			sem_wait(&pixel[sem_y-4][sem_x-4]);
-
-
-			avancer(terrain, pnb);
-
-			sem_post(&pixel[sem_y][sem_x]);
-			for(int i=1 ; i < 4; i++){
-				sem_post(&pixel[sem_y][sem_x-i]);
-				sem_post(&pixel[sem_y-i][sem_x]);
-			}
-
-			for(int i=0 ; i < 4; i++){
-				sem_post(&pixel[sem_y-i][sem_x-4]);
-				sem_post(&pixel[sem_y-4][sem_x-i]);
-			}
-			sem_post(&pixel[sem_y-4][sem_x-4]);
-
+		sem_wait(&pixel[sem_y][sem_x]);
+		for(int i=1 ; i < 4; i++){
+			sem_wait(&pixel[sem_y][sem_x-i]);
+			sem_wait(&pixel[sem_y+i*delta][sem_x]);
 		}
+		for(int i=0 ; i < 4; i++){
+			sem_wait(&pixel[sem_y+i*delta][sem_x-4]);
+			if(!milieu) sem_wait(&pixel[sem_y+4*delta][sem_x-i]);
+		}
+		if(!milieu) sem_wait(&pixel[sem_y+4*delta][sem_x-4]);
+
+
+		avancer(terrain, pnb);
+
+		sem_post(&pixel[sem_y][sem_x]);
+		for(int i=1 ; i < 4; i++){
+			sem_post(&pixel[sem_y][sem_x-i]);
+			sem_post(&pixel[sem_y+i*delta][sem_x]);
+		}
+
+		for(int i=0 ; i < 4; i++){
+			sem_post(&pixel[sem_y+i*delta][sem_x-4]);
+			if(!milieu) sem_post(&pixel[sem_y+4*delta][sem_x-i]);
+		}
+		if(!milieu) sem_post(&pixel[sem_y+4*delta][sem_x-4]);
+
 	}
 	/*
 	printf("%d fini\n", pnb);
@@ -199,6 +174,8 @@ int multiThread_e2(Terrain* terrain){
 
 	free(semaphore);
 	free(the_end);
+	printf("Fini\n");
 
 	return EXIT_SUCCESS;
 }
+

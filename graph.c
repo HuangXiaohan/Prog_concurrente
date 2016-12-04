@@ -16,7 +16,7 @@ void dessinTerrain(Terrain *t){
 	//initgraph(&gd,&gm,0);
 
 	//dessin un rectangle de terrain
-	rectangle(50,50,LONGUEUR+DECALAGE,LARGEUR+DECALAGE);
+	rectangle(DECALAGE,DECALAGE,LONGUEUR+DECALAGE,LARGEUR+DECALAGE);
 
 	//dessin haut du mur de gauche
 	rectangle(DECALAGE,DECALAGE,15+DECALAGE,59+DECALAGE);
