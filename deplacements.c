@@ -168,11 +168,11 @@ void avancer(Terrain* terrain, int numPersonne){
 		disX = terrain->personnes[numPersonne].x;
 		disY = terrain->personnes[numPersonne].y + 3;
 
-		double distance = sqrt( pow((+10),2) + pow((disY+1-63),2) );
+		double distance = sqrt( pow((disX+10),2) + pow((disY+1-63),2) );
 		directions[0][1] = SUD;
 		directions[0][0] = distance;
 
-		distance = sqrt( pow((-1+10),2) + pow((disY+1-63),2) );
+		distance = sqrt( pow((disX-1+10),2) + pow((disY+1-63),2) );
 		directions[1][1] = SUD_OUEST;
 		directions[1][0] = distance;
 	}
@@ -180,16 +180,16 @@ void avancer(Terrain* terrain, int numPersonne){
 		disX = terrain->personnes[numPersonne].x;
 		disY = terrain->personnes[numPersonne].y;
 
-		double distance = sqrt( pow((+10),2) + pow((disY-1-63),2) );
+		double distance = sqrt( pow((disX+10),2) + pow((disY-1-63),2) );
 		directions[0][1] = NORD;
 		directions[0][0] = distance;
 
-		distance = sqrt( pow((-1+10),2) + pow((disY-1-63),2) );
+		distance = sqrt( pow((disX-1+10),2) + pow((disY-1-63),2) );
 		directions[1][1] = NORD_OUEST;
 		directions[1][0] = distance;
 	}
 
-	double distance = sqrt( pow((-1+10),2) + pow((disY-63),2) );
+	double distance = sqrt( pow((disX-1+10),2) + pow((disY-63),2) );
 	directions[2][1] = OUEST;
 	directions[2][0] = distance;
 

@@ -12,6 +12,7 @@
 #include <sched.h>
 #include "myUtils.h"
 #include "deplacements.h"
+#include "monitor.h"
 
 
 typedef struct Args{
@@ -180,14 +181,60 @@ int multiThread_e2(Terrain* terrain){
 /*******************************************************************************************************
  * SCENARIO E3
  *******************************************************************************************************/
+Monitor moniteurs[LARGEUR][LONGUEUR];
+
 void *multi_execution_e3(void* arg){
+	pthread_detach(pthread_self());
+
 	Args* args = (Args*) arg;
 	Terrain* terrain = args->terrain;
 	int pnb = args->personNb;
 	free(args);
 
-	while(terrain->personnes[pnb].alive)
+	while(terrain->personnes[pnb].alive){
+		sched_yield();
+
+		//printf("%d : %d,%d\n", pnb, terrain->personnes[pnb].x, terrain->personnes[pnb].y);
+
+		int sem_x = terrain->personnes[pnb].x, sem_y = terrain->personnes[pnb].y;
+
+		if(sem_y < LARGEUR/2){
+			sem_x += 3;
+		}else{
+			sem_x += 3;
+			sem_y -= 1;
+		}
+
+		verrouille_monitor(&moniteurs[sem_y][sem_x]);
+		for(int i=1 ; i < 4; i++){
+			verrouille_monitor(&moniteurs[sem_y][sem_x-i]);
+			verrouille_monitor(&moniteurs[sem_y+i][sem_x]);
+		}
+		for(int i=0 ; i < 4; i++){
+			verrouille_monitor(&moniteurs[sem_y+i][sem_x-4]);
+			verrouille_monitor(&moniteurs[sem_y+4][sem_x-i]);
+		}
+		verrouille_monitor(&moniteurs[sem_y+4][sem_x-4]);
+
+
 		avancer(terrain, pnb);
+
+		deverrouille_monitor(&moniteurs[sem_y][sem_x]);
+		for(int i=1 ; i < 4; i++){
+			deverrouille_monitor(&moniteurs[sem_y][sem_x-i]);
+			deverrouille_monitor(&moniteurs[sem_y+i][sem_x]);
+		}
+
+		for(int i=0 ; i < 4; i++){
+			deverrouille_monitor(&moniteurs[sem_y+i][sem_x-4]);
+			deverrouille_monitor(&moniteurs[sem_y+4][sem_x-i]);
+		}
+		deverrouille_monitor(&moniteurs[sem_y+4][sem_x-4]);
+
+	}
+	/*
+	printf("%d fini\n", pnb);
+	*/
 
 
 	the_end[pnb] = 1;
@@ -202,6 +249,11 @@ int multiThread_e3(Terrain* terrain){
 
 	semaphore = (sem_t*)malloc(sizeof(sem_t) * terrain->nbPersonnes);
 	the_end = (int*) malloc(sizeof(int) * terrain->nbPersonnes);
+
+
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			initialise_monitor(&moniteurs[i][j]);
 
 
 	for(int i = 0; i < terrain->nbPersonnes; i++){
@@ -226,6 +278,9 @@ int multiThread_e3(Terrain* terrain){
 		sem_destroy(&semaphore[i]);
 	}
 
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			detruit_monitor(&moniteurs[i][j]);
 
 	free(semaphore);
 	free(the_end);
