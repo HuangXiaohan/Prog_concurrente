@@ -79,7 +79,7 @@ void *multi_execution_e2(void* arg){
 
 		int sem_x = terrain->personnes[pnb].x, sem_y = terrain->personnes[pnb].y;
 
-		if(terrain->personnes[pnb].y < LARGEUR/2){
+		if(sem_y < LARGEUR/2){
 			sem_x += 3;
 		}else{
 			sem_x += 3;
