@@ -18,5 +18,9 @@ int monoThread_e2(Terrain* terrain);
 int quatreThreads_e2(Terrain* terrain);
 int multiThread_e2(Terrain* terrain);
 
+//int monoThread_e3(Terrain* terrain);
+int quatreThreads_e3(Terrain* terrain);
+int multiThread_e3(Terrain* terrain);
+
 
 #endif /* EXECUTIONTHREADS_H_ */

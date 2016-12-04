@@ -17,6 +17,10 @@ typedef struct{
 	int numThread;
 } Arguments;
 
+
+/*******************************************************************************************************
+ * SCENARIO E1
+ *******************************************************************************************************/
 void executionT1(Terrain* terrain, int numThread)
 {
 	int largeur = LONGUEUR/4;
@@ -75,6 +79,9 @@ int quatreThreads_e1(Terrain* terrain)
 }
 
 
+/*******************************************************************************************************
+ * SCENARIO E2
+ *******************************************************************************************************/
 sem_t semaphore[4];
 int the_end[4];
 
@@ -168,6 +175,59 @@ int quatreThreads_e2(Terrain* terrain){
 		arguments->numThread = i;
 
 		if(pthread_create(&threads[i], NULL, executionT1_e2, arguments) == -1) {
+			perror("pthread_create");
+			return EXIT_FAILURE;
+		}
+	}
+
+	// Attente de la fin des thread
+	for(int i =0; i < 4; i++){
+		while (!the_end[i]) {
+			sem_wait (&semaphore[i]);
+		}
+		sem_destroy(&semaphore[i]);
+	}
+
+
+	for(int i = 0; i < LARGEUR; i++)
+		for(int j = 0; j < LONGUEUR; j++)
+			sem_destroy(&pixel[i][j]);
+
+	return EXIT_SUCCESS;
+}
+
+
+/*******************************************************************************************************
+ * SCENARIO E3
+ *******************************************************************************************************/
+void *executionT1_e3(void* arg)
+{
+	Arguments* arguments = (Arguments*) arg;
+	Terrain* terrain = arguments->terrain;
+	int numThread = arguments->numThread;
+	free(arguments);
+
+	executionT1(terrain, numThread);
+
+	the_end[numThread] = 1;
+	sem_post (&semaphore[numThread]);
+
+	pthread_exit(NULL);
+}
+
+int quatreThreads_e3(Terrain* terrain){
+
+	pthread_t threads[4];
+
+	for(int i =0; i < 4; i++){
+		the_end[i] = 0;
+		sem_init(&semaphore[i], 0, 0);
+
+		Arguments* arguments = (Arguments*)malloc(sizeof(Arguments));
+		arguments->terrain = terrain;
+		arguments->numThread = i;
+
+		if(pthread_create(&threads[i], NULL, executionT1_e3, arguments) == -1) {
 			perror("pthread_create");
 			return EXIT_FAILURE;
 		}

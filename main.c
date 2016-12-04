@@ -12,8 +12,8 @@
 #include <math.h>
 
 #ifdef GRAPHICS
-	#include <X11/Xlib.h>
-	#include "graph.h"
+#include <X11/Xlib.h>
+#include "graph.h"
 #endif
 
 
@@ -94,6 +94,25 @@ int main(int argc, char* argv[]){
 			scenario = monoThread_e2;
 		}
 		break;
+	case 3:
+		switch(optionThread){
+		case 0:
+			printf("Etape 3: 1 seul thread\n");
+			scenario = monoThread_e2;
+			break;
+		case 1:
+			printf("Etape 3: Terrain divise en 4 threads\n");
+			scenario = quatreThreads_e3;
+			break;
+		case 2:
+			printf("Etape 3: 1 thread par personne\n");
+			scenario = multiThread_e3;
+			break;
+		default:
+			printf("Etape 3: 1 seul thread\n");
+			scenario = monoThread_e2;
+		}
+		break;
 	default:
 		printf("Etape 1: 1 seul thread\n");
 		scenario = monoThread_e1;
@@ -140,8 +159,8 @@ int main(int argc, char* argv[]){
 		double cpu_avrg = calculeTime( t_calcule);
 		detectTime(t_usr, t_calcule);
 		double usr_avrg = calculeTime( t_calcule);
-		printf( "Temps consommation CPU moyen : %f secondes\n", cpu_avrg/ CLOCKS_PER_SEC);
-		printf( "Temps utilisateur moyen : %f secondes\n", usr_avrg/ pow(10,6));
+		printf( "Temps consommation CPU moyen : %f ms\n", cpu_avrg/ pow(10,3));
+		printf( "Temps utilisateur moyen : %f ms\n", usr_avrg/ pow(10,3));
 
 	}
 	else{
@@ -155,7 +174,7 @@ int main(int argc, char* argv[]){
 
 	free(terrain.personnes);
 
-    return 0;
+	return 0;
 }
 
 
